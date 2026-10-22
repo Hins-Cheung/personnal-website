@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>worker check</title></head>
+<body>
+<pre id="o">loading…</pre>
+<script type="module">
+import worker from '../worker/proxy.js';
+const out = {
+  imported: typeof worker === 'object',
+  hasFetch: typeof worker.fetch === 'function'
+};
+// 用一个假请求走一遍 worker 逻辑（缺 url 参数应返回 400）
+const res = await worker.fetch(new Request('https://worker.test/'), {}, { waitUntil(){} });
+out.status = res.status;
+out.body = await res.text();
+out.cors = res.headers.get('Access-Control-Allow-Origin');
+
+// /translate 路由
+try {
+  const tr = await worker.fetch(
+    new Request('https://worker.test/translate?q=' + encodeURIComponent('Norris wins in Hungary') + '&langpair=en%7Czh-CN'),
+    {}, { waitUntil(){} });
+  out.trStatus = tr.status;
+  out.trBody = (await tr.text()).slice(0, 160);
+  out.trCors = tr.headers.get('Access-Control-Allow-Origin');
+} catch (e) {
+  out.trError = e.message;
+}
+document.getElementById('o').textContent = JSON.stringify(out);
+</script>
+</body></html>

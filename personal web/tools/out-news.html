@@ -1,0 +1,49 @@
+<html lang="zh-CN"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>订阅 · Racing &amp; Weather</title>
+<link rel="icon" href="data:image/svg+xml,&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'&gt;&lt;defs&gt;&lt;linearGradient id='g' x1='0' y1='0' x2='1' y2='1'&gt;&lt;stop offset='0' stop-color='%236ea8ff'/&gt;&lt;stop offset='1' stop-color='%23b98cff'/&gt;&lt;/linearGradient&gt;&lt;/defs&gt;&lt;rect width='64' height='64' rx='16' fill='url(%23g)'/&gt;&lt;/svg&gt;">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body><header class="topbar"><div class="topbar-inner"><a class="brand" href="index.html"><span class="dot"></span>Racing &amp; Weather</a><nav class="nav"><a href="index.html">首页</a><a href="news.html" class="active">订阅</a><a href="weather.html">天气</a><a href="about.html">关于</a></nav></div></header>
+<div class="wrap">
+
+  <section class="section" style="margin-top:34px">
+    <div class="section-head">
+      <h2>资讯流</h2>
+      <span class="hint">
+        抓取自各站官方 RSS / 页面 ·
+        <button class="btn" id="refresh">刷新</button>
+      </span>
+    </div>
+    <div class="feed" id="feed"><div class="notice">以下源暂时抓不到：<b>Formula 1、Pirelli 新闻室、The Race</b>。公共代理经常抽风，稍后点刷新重试；若长期失败，可在 <code>assets/config.js</code> 的 <code>fetch.proxies</code> 里换成你自己的代理地址。</div><div class="state"><div class="big">📡</div>暂时没抓到内容。<br>公共 CORS 代理不稳定，稍后再试或换代理地址。</div></div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><h2>订阅源</h2></div>
+    <div class="source-grid" id="sources"><div class="source-card card" style="--src-accent:#ff2e4d"><h3>The Race</h3><p>独立赛车媒体，深度报道与独家视角</p><div class="meta"><span>RSS</span><a href="https://www.the-race.com/" target="_blank" rel="noopener">访问官网 ↗</a></div></div><div class="source-card card" style="--src-accent:#ff3b3b"><h3>Formula 1</h3><p>F1 官方最新消息</p><div class="meta"><span>网页解析</span><a href="https://www.formula1.com/" target="_blank" rel="noopener">访问官网 ↗</a></div></div><div class="source-card card" style="--src-accent:#ffd166"><h3>Pirelli 新闻室</h3><p>倍耐力官方 · Formula 1 分类</p><div class="meta"><span>网页解析</span><a href="https://press.pirelli.com/" target="_blank" rel="noopener">访问官网 ↗</a></div></div></div>
+  </section>
+
+<footer class="foot"><span>你的名字 · 2026</span><span>天气数据来自 Open-Meteo · 资讯来自各站官方 RSS / 页面</span></footer></div>
+
+<script src="assets/config.js"></script>
+<script src="assets/core.js"></script>
+<script src="assets/news.js"></script>
+<script src="assets/translate.js"></script>
+<script>
+mountChrome('news');
+renderSourceCards(document.getElementById('sources'));
+
+function load() {
+  renderNews(document.getElementById('feed'), { groupBy: true });
+}
+load();
+
+document.getElementById('refresh').addEventListener('click', function () {
+  clearCache();
+  load();
+});
+</script>
+
+
+</body></html>

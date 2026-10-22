@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>关于 · Racing &amp; Weather</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%236ea8ff'/><stop offset='1' stop-color='%23b98cff'/></linearGradient></defs><rect width='64' height='64' rx='16' fill='url(%23g)'/></svg>">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <div class="about-grid">
+    <div class="card">
+      <h2 id="about-title">关于</h2>
+      <div class="prose" id="about-bio"></div>
+
+      <h2 style="margin-top:28px">这个站点在做什么</h2>
+      <p>把两类信息放在一屏里：</p>
+      <p><b>赛车资讯</b> —— 直接抓取 The Race 的 RSS、F1 官网的最新页、倍耐力新闻室的 Formula 1 分类，抓标题、缩略图、摘要、发布时间和原文链接，标题附中文译文。</p>
+      <p><b>赛道天气</b> —— 赛历来自 F1 官方页面，比赛周末的逐日天气取自 Open-Meteo，已结束的分站显示历史实测值，正在逼近的分站显示逐日预报，同时给出赛道的当前实况、空气质量与紫外线强度。</p>
+      <p>所有内容在浏览器里实时抓取，没有中间服务器，也不需要任何 API Key。</p>
+    </div>
+
+    <div>
+      <div class="card" style="margin-bottom:18px">
+        <h2 style="margin-top:0">链接</h2>
+        <div class="kv" id="links"></div>
+      </div>
+
+      <div class="card" style="margin-bottom:18px">
+        <h2 style="margin-top:0">数据来源</h2>
+        <div class="kv">
+          <div><span>天气 / 空气质量</span><span>Open-Meteo</span></div>
+          <div><span>赛历</span><span>formula1.com 官方页面</span></div>
+          <div><span>The Race</span><span>官方 RSS</span></div>
+          <div><span>F1 官网</span><span>最新页 HTML</span></div>
+          <div><span>倍耐力</span><span>新闻室 HTML</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 style="margin-top:0">怎么改</h2>
+        <p style="font-size:.88rem">所有可调项都在 <code style="font-size:.85em">assets/config.js</code>：姓名简介、订阅源、天气城市、代理地址。改完刷新页面即可。</p>
+        <p style="font-size:.88rem">抓取走公共 CORS 代理，这类服务经常抽风。真跑不动了，把自己的代理地址填进 <code style="font-size:.85em">fetch.proxies</code> 即可。</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="assets/config.js"></script>
+<script src="assets/core.js"></script>
+<script>
+mountChrome('about');
+
+var p = window.SITE.profile;
+document.getElementById('about-title').textContent = '关于 ' + (p.name || '我');
+document.getElementById('about-bio').innerHTML =
+  '<p>' + esc(p.bio || '') + '</p>' +
+  (p.tagline ? '<p class="muted">' + esc(p.tagline) + '</p>' : '');
+
+document.getElementById('links').innerHTML = (p.links || []).map(function (l) {
+  return '<div><span>' + esc(l.label) + '</span><span>' +
+    '<a href="' + esc(l.url) + '" target="_blank" rel="noopener">' + esc(l.url) + '</a></span></div>';
+}).join('') || '<div><span>暂无</span><span>—</span></div>';
+</script>
+</body>
+</html>

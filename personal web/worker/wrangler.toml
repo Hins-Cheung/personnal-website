@@ -1,0 +1,10 @@
+name = "feed-proxy"
+main = "proxy.js"
+compatibility_date = "2026-01-01"
+
+# 部署:
+#   cd worker
+#   npx wrangler deploy
+#
+# 部署完把输出的地址填到 ../assets/config.js 的 fetch.proxies 第一项，例如:
+#   { prefix: 'https://feed-proxy.你的子域名.workers.dev/?url=' },

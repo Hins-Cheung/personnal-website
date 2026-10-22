@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><title>debug</title></head>
+<body>
+<pre id="o">running…</pre>
+<script src="../assets/config.js"></script>
+<script src="../assets/core.js"></script>
+<script src="../assets/translate.js"></script>
+<script>
+// 抓取链路诊断：每个源实际走了哪条通道、抓到多少条、有没有缩略图
+const lines = [];
+const log = (s) => { lines.push(s); document.getElementById('o').textContent = lines.join('\n'); };
+
+window.SITE.sources.forEach((src) => {
+  log('=== ' + src.name + '  (' + src.type + '/' + (src.parser || '-') + ')');
+  fetchText(src.url, { cache: false })
+    .then((res) => {
+      log('  通道: ' + res.via + '   字节: ' + res.text.length);
+      const items = src.type === 'rss' ? parseFeed(res.text) : parseHtml(res.text, src);
+      const withImg = items.filter((i) => i.image).length;
+      log('  条目: ' + items.length + '   带图: ' + withImg);
+      items.slice(0, 2).forEach((i) => log('    · ' + i.title.slice(0, 50) + '  img=' + (i.image || '无')));
+    })
+    .catch((err) => {
+      log('  失败: ' + err.message);
+      (err.errors || []).forEach((e) => log('    - ' + e));
+    });
+});
+
+log('');
+log('=== 翻译接口');
+translateText('Norris wins in Hungary with a late charge on softs').then((zh) => {
+  log('  译文: ' + (zh || '(失败)'));
+  log('DONE');
+});
+</script>
+</body>
+</html>

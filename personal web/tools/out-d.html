@@ -1,0 +1,55 @@
+<html lang="zh-CN"><head><meta charset="utf-8"><title>debug</title></head>
+<body>
+<pre id="o">=== The Race  (rss/-)
+=== Formula 1  (html/f1)
+=== Pirelli 新闻室  (html/pirelli)
+
+=== 翻译接口
+  译文: 诺里斯（ Norris ）在匈牙利赢得胜利，后期收取了软糖费用
+DONE
+  通道: https://r.jina.ai/   字节: 83956
+  条目: 15   带图: 15
+    · F1 Rewind: The truth behind Schumacher's Ferrari e  img=https://storage.ghost.io/c/dd/af/ddafbd99-2ccd-468c-b622-4b3cccf80b49/content/images/2026/10/2026-10-21-F1-Rewind-MSC-Car.png
+    · Podcast: Why F1's US GP is pivotal for shaping 202  img=https://storage.ghost.io/c/dd/af/ddafbd99-2ccd-468c-b622-4b3cccf80b49/content/images/2026/10/YT-F1-Podcast-Thumb_Episode_Pivotal2.png
+  通道: https://r.jina.ai/   字节: 229137
+  条目: 30   带图: 30
+    · In the Land of the Cowboys  img=https://content.presspage.com/uploads/2363/b239ca6b-8b13-413d-b542-59c5aad90466/500_featured-preview-us26.jpg?10000
+    · Max rules in Singapore: en plein with a one-stop s  img=https://content.presspage.com/uploads/2363/b239ca6b-8b13-413d-b542-59c5aad90466/500_featured-preview-us26.jpg?10000
+  通道: https://r.jina.ai/   字节: 289795
+  条目: 16   带图: 16
+    · Facts, stats and trivia ahead of the 2026 United S  img=https://media.formula1.com/image/upload/t_16by9North/c_fill,w_352/q_auto/v1740000001/fom-website/2026/United%20States/NEED%20TO%20KNOW%20header%20template%20Austin.webp
+    · Everything you need to know about the Circuit of T  img=https://media.formula1.com/image/upload/t_16by9South/c_fill,w_352/q_auto/v1740000001/trackside-images/2025/F1_Grand_Prix_of_United_States___Sprint__Qualifying/2241843208.webp</pre>
+<script src="../assets/config.js"></script>
+<script src="../assets/core.js"></script>
+<script src="../assets/translate.js"></script>
+<script>
+// 抓取链路诊断：每个源实际走了哪条通道、抓到多少条、有没有缩略图
+const lines = [];
+const log = (s) => { lines.push(s); document.getElementById('o').textContent = lines.join('\n'); };
+
+window.SITE.sources.forEach((src) => {
+  log('=== ' + src.name + '  (' + src.type + '/' + (src.parser || '-') + ')');
+  fetchText(src.url, { cache: false })
+    .then((res) => {
+      log('  通道: ' + res.via + '   字节: ' + res.text.length);
+      const items = src.type === 'rss' ? parseFeed(res.text) : parseHtml(res.text, src);
+      const withImg = items.filter((i) => i.image).length;
+      log('  条目: ' + items.length + '   带图: ' + withImg);
+      items.slice(0, 2).forEach((i) => log('    · ' + i.title.slice(0, 50) + '  img=' + (i.image || '无')));
+    })
+    .catch((err) => {
+      log('  失败: ' + err.message);
+      (err.errors || []).forEach((e) => log('    - ' + e));
+    });
+});
+
+log('');
+log('=== 翻译接口');
+translateText('Norris wins in Hungary with a late charge on softs').then((zh) => {
+  log('  译文: ' + (zh || '(失败)'));
+  log('DONE');
+});
+</script>
+
+
+</body></html>
